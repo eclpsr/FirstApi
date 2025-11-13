@@ -14,6 +14,7 @@ public class ProductsController : ControllerBase
     {
         product.Id = _products.Count + 1;
         _products.Add(product);
+        if(!PriceCheck(product)) return BadRequest();
         return Ok(product);
     }
 
@@ -22,10 +23,10 @@ public class ProductsController : ControllerBase
     {
         foreach (var product in products)
         {
+            if (!PriceCheckBulk(products)) return BadRequest();
             product.Id = _products.Count + 1;
             _products.Add(product);
         }
-
         return Ok(products);
     }
 
@@ -46,5 +47,25 @@ public class ProductsController : ControllerBase
         if (product == null) return NotFound();
         _products.Remove(product);
         return NoContent();
+    }
+
+    private bool PriceCheckBulk(List<Product> products)
+    {
+        foreach (var product in products)
+        {
+            if (product.Price < 0)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    private bool PriceCheck(Product product)
+    {
+        if (product.Price < 0)
+        {
+            return false;
+        }
+        return true;
     }
 }
