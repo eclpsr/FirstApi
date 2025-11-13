@@ -28,4 +28,23 @@ public class ProductsController : ControllerBase
 
         return Ok(products);
     }
+
+    [HttpPut("{id}")]
+    public IActionResult Update(int id, Product updated)
+    {
+        var product = _products.FirstOrDefault(p => p.Id == id);
+        if (product == null) return NotFound();
+        product.Name = updated.Name;
+        product.Price = updated.Price;
+        return Ok(product);
+    }
+
+    [HttpDelete("{id}")]
+    public IActionResult Delete(int id)
+    {
+        var product = _products.FirstOrDefault(p => p.Id == id);
+        if (product == null) return NotFound();
+        _products.Remove(product);
+        return NoContent();
+    }
 }
